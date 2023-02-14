@@ -119,11 +119,7 @@ class _SignInState extends State<SignIn> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyHomePage()),
-                    );
+                    // To be implemented
                   }
                 },
                 child: const Text('Login'),
@@ -131,10 +127,7 @@ class _SignInState extends State<SignIn> {
               const SizedBox(height: 50),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignIn()),
-                  );
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Dont have an account? Sign Up',
