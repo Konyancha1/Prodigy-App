@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:prodigy/utils.dart';
-import 'package:prodigy/forgot_password.dart';
 
-class SignIn extends StatefulWidget {
-  final VoidCallback onClickedSignUp;
-  const SignIn({Key? key, required this.onClickedSignUp}) : super(key: key);
+class MySignUpPage extends StatefulWidget {
+  final VoidCallback onClickedSignIn;
+
+  const MySignUpPage({Key? key, required this.onClickedSignIn})
+      : super(key: key);
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<MySignUpPage> createState() => _MySignUpPageState();
 }
 
-class _SignInState extends State<SignIn> {
+class _MySignUpPageState extends State<MySignUpPage> {
+  final formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
-  Future signIn() async {
+  Future signUp() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()));
+        builder: (context) => Center(child: CircularProgressIndicator()));
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       print(e);
       String errorMessage = 'An error occurred, please try again.';
+      if (e.code == 'email-already-in-use') {
+        errorMessage =
+            'The email address is already in use by another account.';
+      }
       Utils.showSnackBar(errorMessage, ScaffoldMessenger.of(context));
     } finally {
       Navigator.pop(context);
@@ -50,6 +61,7 @@ class _SignInState extends State<SignIn> {
           ),
         ),
         child: Form(
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -72,7 +84,7 @@ class _SignInState extends State<SignIn> {
               ),
               const SizedBox(height: 80),
               const Text(
-                "Login",
+                "Sign Up",
                 style: TextStyle(
                   fontFamily: "Raleway",
                   fontWeight: FontWeight.w400,
@@ -81,6 +93,28 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
+                    labelText: 'Enter Name',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextFormField(
@@ -96,8 +130,8 @@ class _SignInState extends State<SignIn> {
                     labelStyle: TextStyle(color: Colors.white),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                    if (value == null || !EmailValidator.validate(value)) {
+                      return 'Please enter a vaild email';
                     }
                     return null;
                   },
@@ -115,7 +149,7 @@ class _SignInState extends State<SignIn> {
                         width: 1.0,
                       ),
                     ),
-                    labelText: 'Enter Password',
+                    labelText: 'Choose Password',
                     labelStyle: TextStyle(color: Colors.white),
                   ),
                   // ignore: dead_code
@@ -133,37 +167,17 @@ class _SignInState extends State<SignIn> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  signIn();
+                  signUp();
                 },
-                child: const Text('Login'),
+                child: const Text('Sign Up'),
               ),
               const SizedBox(height: 50),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ForgotPasswordPage(),
-                    ),
-                  );
+                  widget.onClickedSignIn();
                 },
                 child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Raleway',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  widget.onClickedSignUp();
-                },
-                child: const Text(
-                  'Dont have an account? Sign Up',
+                  'Already have an account? Login',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Raleway',

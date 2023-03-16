@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "472530056120",
+    "project_id": "prodigy-app-834ff",
+    "storage_bucket": "prodigy-app-834ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472530056120:android:5ba35fb1d9c11b0760954d",
+        "android_client_info": {
+          "package_name": "com.example.prodigy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472530056120-gt9j3kciftnid43julrjt4dsijh9mnkf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnKc8llXn3cOW2d2bvdC5mq4fePigvJEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472530056120-gt9j3kciftnid43julrjt4dsijh9mnkf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
