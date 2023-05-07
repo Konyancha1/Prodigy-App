@@ -2,7 +2,7 @@
 
 ## Link to presentation:
 
-## Link to documentation
+## Link to documentation: https://docs.google.com/document/d/1G4s0ew65KvjB_Nci1eHUQHPkF88gKCqkANcOaJBpqB0/edit?usp=sharing
 
 ## Link to prototype: 
 
