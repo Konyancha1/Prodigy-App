@@ -1,16 +1,13 @@
-# prodigy
+# Prodigy App
 
-A new Flutter project.
+## Link to presentation
+-
 
-## Getting Started
+## Link to documentation
+- https://docs.google.com/document/d/1G4s0ew65KvjB_Nci1eHUQHPkF88gKCqkANcOaJBpqB0/edit?usp=sharing
 
-This project is a starting point for a Flutter application.
+## Link to prototype
+- 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Resources Used
+- Firebase Authentication - https://www.youtube.com/watch?v=4vKiJZNPhss
