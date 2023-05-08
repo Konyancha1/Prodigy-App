@@ -20,23 +20,26 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: Text(
-              'Calender',
-              style: TextStyle(color: Colors.black),
-            ).data!),
+          icon: Icon(Icons.access_time),
+          label: Text(
+            'My Schedule',
+            style: TextStyle(color: Colors.black),
+          ).data!,
+        ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: Text(
-              'My Schedule',
-              style: TextStyle(color: Colors.black),
-            ).data!),
+          icon: Icon(Icons.calendar_today),
+          label: Text(
+            'Calender',
+            style: TextStyle(color: Colors.black),
+          ).data!,
+        ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle_outline),
-            label: Text(
-              'Tasks',
-              style: TextStyle(color: Colors.black),
-            ).data!),
+          icon: Icon(Icons.check_circle_outline),
+          label: Text(
+            'Tasks',
+            style: TextStyle(color: Colors.black),
+          ).data!,
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.exit_to_app),
           label: Text(
@@ -48,6 +51,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       currentIndex: widget.currentIndex,
       selectedItemColor: Colors.yellow,
       unselectedItemColor: Colors.black,
+      selectedFontSize: 14.0,
+      unselectedFontSize: 14.0,
+      showUnselectedLabels: true,
       onTap: widget.onItemTapped,
     );
   }

@@ -1,162 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:prodigy/calender_page.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:prodigy/navbar.dart';
+import 'package:prodigy/calender_page.dart';
 import 'package:prodigy/tasks_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class MyScheduleForm extends StatefulWidget {
+class SchedulePage extends StatefulWidget {
+  const SchedulePage({Key? key}) : super(key: key);
+
   @override
-  _MyScheduleFormState createState() => _MyScheduleFormState();
+  _SchedulePageState createState() => _SchedulePageState();
 }
 
-class _MyScheduleFormState extends State<MyScheduleForm> {
-  void _showForm() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => _buildForm(context),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      isDismissible: true,
-    );
-  }
-
-  List<DropdownMenuItem<String>> _hourList() {
-    return <DropdownMenuItem<String>>[
-      const DropdownMenuItem(
-        value: '12:00 AM',
-        child: Text('12:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '1:00 AM',
-        child: Text('1:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '2:00 AM',
-        child: Text('2:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '3:00 AM',
-        child: Text('3:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '4:00 AM',
-        child: Text('4:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '5:00 AM',
-        child: Text('5:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '6:00 AM',
-        child: Text('6:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '7:00 AM',
-        child: Text('7:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '8:00 AM',
-        child: Text('8:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '9:00 AM',
-        child: Text('9:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '10:00 AM',
-        child: Text('10:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '11:00 AM',
-        child: Text('11:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '12:00 PM',
-        child: Text('12:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '1:00 PM',
-        child: Text('1:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '2:00 PM',
-        child: Text('2:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '3:00 PM',
-        child: Text('3:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '4:00 PM',
-        child: Text('4:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '5:00 PM',
-        child: Text('5:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '6:00 PM',
-        child: Text('6:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '7:00 PM',
-        child: Text('7:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '8:00 PM',
-        child: Text('8:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '9:00 PM',
-        child: Text('9:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '10:00 PM',
-        child: Text('10:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '11:00 PM',
-        child: Text('11:00 PM'),
-      ),
-    ];
-  }
-
-  List<DropdownMenuItem<Duration>> _durationList() {
-    return <DropdownMenuItem<Duration>>[
-      const DropdownMenuItem(
-        value: Duration(minutes: 15),
-        child: Text('15 minutes'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(minutes: 30),
-        child: Text('30 minutes'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(hours: 1),
-        child: Text('1 hour'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(hours: 2),
-        child: Text('2 hours'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(hours: 3),
-        child: Text('3 hours'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(hours: 4),
-        child: Text('4 hours'),
-      ),
-      const DropdownMenuItem(
-        value: Duration(hours: 5),
-        child: Text('5 hours'),
-      ),
-    ];
-  }
-
-  int _selectedIndex = 1;
+class _SchedulePageState extends State<SchedulePage> {
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -166,13 +24,13 @@ class _MyScheduleFormState extends State<MyScheduleForm> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CalenderPage()),
+          MaterialPageRoute(builder: (context) => const SchedulePage()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyScheduleForm()),
+          MaterialPageRoute(builder: (context) => CalenderPage()),
         );
         break;
       case 2:
@@ -186,174 +44,11 @@ class _MyScheduleFormState extends State<MyScheduleForm> {
     }
   }
 
-  Widget _buildForm(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      child: SizedBox(
-        height: 530,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-              ),
-              Container(
-                color: Colors.grey.shade200,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Event Details',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<String>(
-                        items: _hourList(),
-                        decoration: const InputDecoration(
-                          labelText: 'Time',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        onChanged: (String? value) {},
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<Duration>(
-                        items: _durationList(),
-                        decoration: const InputDecoration(
-                          labelText: 'Duration',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        onChanged: (Duration? value) {},
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<String>(
-                        value: 'Tone 1',
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Tone 1',
-                            child: Text('Tone 1'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Tone 2',
-                            child: Text('Tone 2'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Tone 3',
-                            child: Text('Tone 3'),
-                          ),
-                        ],
-                        onChanged: (value) {},
-                        decoration: const InputDecoration(
-                          labelText: 'Alarm Tone',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<String>(
-                        value: 'Grey',
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Red',
-                            child: Text('Red'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Yellow',
-                            child: Text('Yellow'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Green',
-                            child: Text('Green'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Grey',
-                            child: Text('Grey'),
-                          ),
-                        ],
-                        onChanged: (value) {},
-                        decoration: const InputDecoration(
-                          labelText: 'Color',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 100,
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // What to happen after done is clicked
-                    },
-                    style: ElevatedButton.styleFrom(primary: Colors.black),
-                    child: const Text(
-                      'Done',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final formattedDate = DateFormat('EEE, MMM/d/y').format(now);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -366,17 +61,128 @@ class _MyScheduleFormState extends State<MyScheduleForm> {
             ),
           ),
         ),
-        child: Center(
-          child: IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 20.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            Stack(
+              children: const [
+                Center(
+                  child: Text(
+                    "Prodigy",
+                    style: TextStyle(
+                      fontFamily: 'Pacifico',
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              _showForm();
-            },
-          ),
+            const SizedBox(height: 80),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                formattedDate,
+                style: const TextStyle(
+                  fontSize: 22,
+                  color: Colors.white,
+                  fontFamily: "Raleway",
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: StreamBuilder<DataSnapshot>(
+                stream:
+                    Schedule.eventRef.onValue.map((event) => event.snapshot),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    final schedules = <Schedule>[];
+                    final data = snapshot.data as DataSnapshot;
+                    final map = data.value as Map<dynamic, dynamic>? ?? {};
+                    if (map.isEmpty) {
+                      return const Center(
+                          child: Text('No schedules available',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: "Raleway",
+                              )));
+                    }
+                    map.forEach((key, value) {
+                      final schedule = Schedule.fromJson(value);
+                      schedule.id = key;
+                      schedules.add(schedule);
+                    });
+                    return ListView.builder(
+                      itemCount: schedules.length,
+                      itemBuilder: (context, index) {
+                        final schedule = schedules[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 24.0,
+                                height: 24.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    schedule.scheduleName[0].toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16.0),
+                              Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${schedule.scheduleName} from ${schedule.time}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontFamily: "Raleway",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return const Center(
+                      child: Text(
+                        'No schedules available',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontFamily: "Raleway",
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: MyBottomNavigationBar(

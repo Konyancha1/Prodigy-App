@@ -24,10 +24,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailController.text.trim());
       Utils.showSnackBar(
-          "Password Reset Email Sent", ScaffoldMessenger.of(context));
+          // ignore: use_build_context_synchronously
+          "Password Reset Email Sent",
+          ScaffoldMessenger.of(context));
+      // ignore: use_build_context_synchronously
       Navigator.of(context).popUntil((route) => route.isFirst);
     } on FirebaseAuthException catch (e) {
-      print(e);
       Utils.showSnackBar(e.message, ScaffoldMessenger.of(context));
     } finally {
       Navigator.pop(context);

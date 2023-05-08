@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:prodigy/calender_page.dart';
 import 'package:prodigy/schedule.dart';
 import 'package:prodigy/utils.dart';
 
@@ -67,7 +68,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) => isVerified
-      ? MyScheduleForm()
+      ? CalenderPage()
       : Scaffold(
           appBar: AppBar(
             title: Text('Verify Email'),

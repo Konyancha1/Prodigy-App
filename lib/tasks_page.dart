@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:prodigy/calender_page.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:prodigy/schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:prodigy/navbar.dart';
-import 'package:prodigy/schedule.dart';
+import 'package:prodigy/calender_page.dart';
 
 class MyTaskPage extends StatefulWidget {
   const MyTaskPage({Key? key}) : super(key: key);
@@ -12,17 +13,46 @@ class MyTaskPage extends StatefulWidget {
   _MyTaskPageState createState() => _MyTaskPageState();
 }
 
+class Task {
+  String _taskName;
+  String _reminder;
+  bool _completed;
+  String? _id;
+
+  Task(this._taskName, this._reminder, [this._completed = false, this._id]);
+
+  String get task => _taskName;
+  String get reminder => _reminder;
+  bool get completed => _completed;
+  String get id => _id ?? '';
+
+  set task(String value) {
+    _taskName = value;
+  }
+
+  set reminder(String value) {
+    _reminder = value;
+  }
+
+  set completed(bool value) {
+    _completed = value;
+  }
+
+  set id(String value) => _id = value;
+
+  Map<String, dynamic> toJson() => {
+        'task': _taskName,
+        'reminder': _reminder,
+        'completed': _completed,
+        'id': _id
+      };
+
+  factory Task.fromJson(Map<String, dynamic> json) =>
+      Task(json['task'], json['reminder'], json['completed'], json['id']);
+}
+
 class _MyTaskPageState extends State<MyTaskPage> {
   int _selectedIndex = 2;
-  List<String> _tasks = [];
-  List<bool> _isCheckedList = [];
-
-  void addTask(String taskName) {
-    setState(() {
-      _tasks.add(taskName);
-      _isCheckedList.add(false);
-    });
-  }
 
   void _showForm() {
     showModalBottomSheet(
@@ -36,107 +66,6 @@ class _MyTaskPageState extends State<MyTaskPage> {
     );
   }
 
-  List<DropdownMenuItem<String>> _hourList() {
-    return <DropdownMenuItem<String>>[
-      const DropdownMenuItem(
-        value: '12:00 AM',
-        child: Text('12:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '1:00 AM',
-        child: Text('1:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '2:00 AM',
-        child: Text('2:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '3:00 AM',
-        child: Text('3:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '4:00 AM',
-        child: Text('4:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '5:00 AM',
-        child: Text('5:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '6:00 AM',
-        child: Text('6:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '7:00 AM',
-        child: Text('7:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '8:00 AM',
-        child: Text('8:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '9:00 AM',
-        child: Text('9:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '10:00 AM',
-        child: Text('10:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '11:00 AM',
-        child: Text('11:00 AM'),
-      ),
-      const DropdownMenuItem(
-        value: '12:00 PM',
-        child: Text('12:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '1:00 PM',
-        child: Text('1:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '2:00 PM',
-        child: Text('2:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '3:00 PM',
-        child: Text('3:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '4:00 PM',
-        child: Text('4:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '5:00 PM',
-        child: Text('5:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '6:00 PM',
-        child: Text('6:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '7:00 PM',
-        child: Text('7:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '8:00 PM',
-        child: Text('8:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '9:00 PM',
-        child: Text('9:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '10:00 PM',
-        child: Text('10:00 PM'),
-      ),
-      const DropdownMenuItem(
-        value: '11:00 PM',
-        child: Text('11:00 PM'),
-      ),
-    ];
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -145,19 +74,19 @@ class _MyTaskPageState extends State<MyTaskPage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CalenderPage()),
+          MaterialPageRoute(builder: (context) => SchedulePage()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyScheduleForm()),
+          MaterialPageRoute(builder: (context) => CalenderPage()),
         );
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MyTaskPage()),
+          MaterialPageRoute(builder: (context) => MyTaskPage()),
         );
         break;
       case 3:
@@ -166,6 +95,8 @@ class _MyTaskPageState extends State<MyTaskPage> {
   }
 
   TextEditingController _taskNameController = TextEditingController();
+  TextEditingController _reminderController = TextEditingController();
+  DatabaseReference _taskRef = FirebaseDatabase.instance.ref().child('tasks');
 
   Widget _buildForm(BuildContext context) {
     return Container(
@@ -174,7 +105,7 @@ class _MyTaskPageState extends State<MyTaskPage> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: SizedBox(
-        height: 380,
+        height: 250,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -204,44 +135,10 @@ class _MyTaskPageState extends State<MyTaskPage> {
                     const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<String>(
-                        items: _hourList(),
+                      child: TextFormField(
+                        controller: _reminderController,
                         decoration: const InputDecoration(
-                          labelText: 'Reminder',
-                          labelStyle: TextStyle(color: Colors.black),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        onChanged: (String? value) {},
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownButtonFormField<String>(
-                        value: 'Tone 1',
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Tone 1',
-                            child: Text('Tone 1'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Tone 2',
-                            child: Text('Tone 2'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Tone 3',
-                            child: Text('Tone 3'),
-                          ),
-                        ],
-                        onChanged: (value) {},
-                        decoration: const InputDecoration(
-                          labelText: 'Alarm Tone',
+                          labelText: 'Reminder Time',
                           labelStyle: TextStyle(color: Colors.black),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
@@ -252,7 +149,6 @@ class _MyTaskPageState extends State<MyTaskPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -261,12 +157,27 @@ class _MyTaskPageState extends State<MyTaskPage> {
                 width: 100,
                 child: Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      String taskName = _taskNameController.text;
-                      addTask(taskName);
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                      String task = _taskNameController.text;
+                      String reminder = _reminderController.text;
+
+                      Task newTask = Task(task, reminder);
+                      await _taskRef.push().set(newTask.toJson());
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Task created',
+                              style: TextStyle(color: Colors.black)),
+                          duration: const Duration(seconds: 2),
+                          backgroundColor: Colors.white,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+
+                      Navigator.pop(context);
                     },
-                    style: ElevatedButton.styleFrom(primary: Colors.black),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
                     child: const Text(
                       'Done',
                       style: TextStyle(color: Colors.white),
@@ -307,8 +218,8 @@ class _MyTaskPageState extends State<MyTaskPage> {
           children: [
             const SizedBox(height: 10),
             Stack(
-              children: [
-                const Center(
+              children: const [
+                Center(
                   child: Text(
                     "Prodigy",
                     style: TextStyle(
@@ -316,20 +227,6 @@ class _MyTaskPageState extends State<MyTaskPage> {
                       fontSize: 20,
                       color: Colors.white,
                     ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 20.0,
-                    ),
-                    onPressed: () {
-                      // Show settings page
-                    },
                   ),
                 ),
               ],
@@ -346,43 +243,93 @@ class _MyTaskPageState extends State<MyTaskPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: _tasks.length,
-                itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    title: Text(
-                      _tasks[index],
+              child: StreamBuilder<DataSnapshot>(
+                stream: _taskRef.onValue.map((event) => event.snapshot),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    final tasks = <Task>[];
+                    final data = snapshot.data as DataSnapshot;
+                    final map = data.value as Map<dynamic, dynamic>? ?? {};
+                    map.forEach((key, value) {
+                      final task = Task.fromJson(value);
+                      task.id = key;
+                      tasks.add(task);
+                    });
+                    return ListView.builder(
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index) {
+                        final task = tasks[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          child: Row(
+                            children: [
+                              Theme(
+                                data: ThemeData(
+                                  checkboxTheme: CheckboxThemeData(
+                                    fillColor: MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                    checkColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      side:
+                                          const BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                child: Checkbox(
+                                  value: task.completed,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      task.completed = value!;
+                                    });
+                                    _taskRef
+                                        .child(task.id)
+                                        .update(task.toJson());
+                                  },
+                                ),
+                              ),
+                              Text(
+                                task._taskName,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: "Raleway",
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return const Center(
+                        child: Text(
+                      'No tasks available',
                       style: TextStyle(
-                        color:
-                            _isCheckedList[index] ? Colors.grey : Colors.white,
-                        decoration: _isCheckedList[index]
-                            ? TextDecoration.lineThrough
-                            : null,
+                        fontSize: 18,
+                        color: Colors.white,
                         fontFamily: "Raleway",
                       ),
-                    ),
-                    value: _isCheckedList[index],
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _isCheckedList[index] = value!;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                    tileColor: Colors.white,
-                  );
+                    ));
+                  }
                 },
               ),
             ),
-            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
-                  width: 120,
+                  width: 100,
                   height: 50,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
@@ -395,13 +342,13 @@ class _MyTaskPageState extends State<MyTaskPage> {
                         icon: const Icon(
                           Icons.add,
                           color: Colors.black,
-                          size: 20.0,
+                          size: 17.0,
                         ),
                         onPressed: () {
                           _showForm();
                         },
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 1),
                       const Text(
                         "ToDo",
                         style: TextStyle(
@@ -414,7 +361,6 @@ class _MyTaskPageState extends State<MyTaskPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
           ],
         ),
       ),

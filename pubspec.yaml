@@ -29,11 +29,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.17.0
+  pedantic: ^1.11.0
   firebase_core: ^2.7.1
   cloud_firestore: ^4.4.4
   firebase_auth: ^4.2.10
+  firebase_database: ^10.1.1
   email_validator: ^2.1.17
+  table_calendar: ^3.0.9
+dependency_overrides:
+  intl: ^0.17.0
 
 
 
