@@ -6,8 +6,8 @@
 ## Link to documentation
 - https://docs.google.com/document/d/1G4s0ew65KvjB_Nci1eHUQHPkF88gKCqkANcOaJBpqB0/edit?usp=sharing
 
-## Link to prototype
-- 
+## Firebase App Tester invite link
+- https://appdistribution.firebase.dev/i/17f02aa8e11bfe17
 
 ## Resources Used
 - Firebase Authentication - https://www.youtube.com/watch?v=4vKiJZNPhss
